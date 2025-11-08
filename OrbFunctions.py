@@ -1,8 +1,8 @@
 def GetVersionHigh():
-    return 1
+    return 2
 
 def GetVersionLow():
-    return 0
+    return 1
 
 
 def get_config():
@@ -110,3 +110,4 @@ def DiscoverHost(pe,psta,puart):
     picmsg.append(crc >> 8)
     puart.write(picmsg)
     return mygamehost
+
