@@ -22,7 +22,6 @@ e = espnow.ESPNow()
 e.active(True)
 
 
-
 gamehost=OrbFunctions.DiscoverHost(e,sta,uart)
 AliveInterval=30
 LastAliveMsg=time.time()
@@ -37,7 +36,6 @@ while True:
         msg.append(OrbFunctions.GetVersionLow())
         msg.append(PICVersionHigh)
         msg.append(PICVersionLow)
-        msg.append(0)
         crc=OrbFunctions.crc16(msg)
         msg.append(crc & 255)
         msg.append(crc >> 8)
@@ -76,26 +74,33 @@ while True:
     if (e.any()):
         host,msg=e.irecv()
         if len(msg)>1:
+            print("received msg")
             if OrbFunctions.crc16(msg)==0:
                 if msg[0]<101:
                     #print(msg)
                     uart.write(msg)
                 else:
+                    print("Received msg type: " + str(msg[0]))
                     if msg[0]==0xFA:
                         FailureReason=0
+                        print("Connecting wifi...")
                         if OrbFunctions.connectwifi()==True:
+                            print("Connected.")
                             if msg[1]==101:
                                 filename='OrbCodeReborn.hex'
                             if msg[1]==1:
                                 filename='OrbCode.py'
                             if msg[1]==2:
                                 filename='OrbFunctions.py'
+                            print("Downloading file " + filename)
                             if OrbFunctions.downloadfile(filename)==True:
+                                print("Downloaded.")
                                 import os
                                 newfilename="new-" + filename
                                 oldfilename="old-" + filename
                                 filestat=os.stat(newfilename)
                                 targetsize=(msg[4]*65536) + (msg[3] * 256) + msg[2]
+                                
                                 if filestat[6]==targetsize:
                                     try:
                                         os.remove(oldfilename)
@@ -116,11 +121,13 @@ while True:
                                         FailureReason=4
                                     
                                 else:
+                                    print("file size mismatch")
                                     FailureReason=3
                             else:
                                 FailureReason=2
                         else:
                             FailureReason=1
+                        print("Result code: " + str(FailureReason))
                         if FailureReason>0: 
                             sta.disconnect()
                             sta.config(channel=1)
