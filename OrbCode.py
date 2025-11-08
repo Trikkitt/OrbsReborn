@@ -9,7 +9,7 @@ from machine import deepsleep,UART,reset
 uart = UART(0,115200,bits=8, parity=None, stop=1, timeout=2, timeout_char=2, rxbuf=255)
 
 CodeVersionHigh=1
-CodeVersionLow=0
+CodeVersionLow=1
 PICVersionHigh=0
 PICVersionLow=0
 VersionChange=True
@@ -141,3 +141,4 @@ while True:
                         e.send(gamehost,reply)
 
                 
+
