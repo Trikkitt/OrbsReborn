@@ -2,7 +2,7 @@ def GetVersionHigh():
     return 2
 
 def GetVersionLow():
-    return 1
+    return 2
 
 
 def get_config():
@@ -50,9 +50,17 @@ def connectwifi():
     sta_if = network.WLAN(network.STA_IF)
     sta_if.active(True)
     sta_if.connect(wifi_SSID,wifi_PSK)
-
-    while not sta_if.isconnected():
+    loopcount=0
+    while not sta_if.isconnected() and loopcount<10:
     	utime.sleep(2)
+    	loopcount+=1
+    if sta_if.isconnected()==False:
+        sta.disconnect() 
+        sta.config(channel=1)
+
+    return sta_if.isconnected()
+
+
 
 def downloadfile(filename):
     import os
