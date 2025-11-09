@@ -8,8 +8,9 @@ from machine import deepsleep,UART,reset
 #uos.dupterm(None,1)
 uart = UART(0,115200,bits=8, parity=None, stop=1, timeout=2, timeout_char=2, rxbuf=255)
 
+
 CodeVersionHigh=1
-CodeVersionLow=1
+CodeVersionLow=0
 PICVersionHigh=0
 PICVersionLow=0
 VersionChange=True
@@ -74,27 +75,27 @@ while True:
     if (e.any()):
         host,msg=e.irecv()
         if len(msg)>1:
-            print("received msg")
+            #print("received msg")
             if OrbFunctions.crc16(msg)==0:
                 if msg[0]<101:
                     #print(msg)
                     uart.write(msg)
                 else:
-                    print("Received msg type: " + str(msg[0]))
+                    #print("Received msg type: " + str(msg[0]))
                     if msg[0]==0xFA:
                         FailureReason=0
-                        print("Connecting wifi...")
+                        #print("Connecting wifi...")
                         if OrbFunctions.connectwifi()==True:
-                            print("Connected.")
+                            #print("Connected.")
                             if msg[1]==101:
                                 filename='OrbCodeReborn.hex'
                             if msg[1]==1:
                                 filename='OrbCode.py'
                             if msg[1]==2:
                                 filename='OrbFunctions.py'
-                            print("Downloading file " + filename)
+                            #print("Downloading file " + filename)
                             if OrbFunctions.downloadfile(filename)==True:
-                                print("Downloaded.")
+                                #print("Downloaded.")
                                 import os
                                 newfilename="new-" + filename
                                 oldfilename="old-" + filename
@@ -121,13 +122,13 @@ while True:
                                         FailureReason=4
                                     
                                 else:
-                                    print("file size mismatch")
+                                    #print("file size mismatch")
                                     FailureReason=3
                             else:
                                 FailureReason=2
                         else:
                             FailureReason=1
-                        print("Result code: " + str(FailureReason))
+                        #print("Result code: " + str(FailureReason))
                         if FailureReason>0: 
                             sta.disconnect()
                             sta.config(channel=1)
