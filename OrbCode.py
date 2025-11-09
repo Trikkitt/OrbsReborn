@@ -5,7 +5,7 @@ import uos
 import time
 from machine import deepsleep,UART,reset
 
-#uos.dupterm(None,1)
+uos.dupterm(None,1)
 uart = UART(0,115200,bits=8, parity=None, stop=1, timeout=2, timeout_char=2, rxbuf=255)
 
 
@@ -117,7 +117,9 @@ while True:
                                         reply.append(crc >> 8)
                                         reply.append(crc & 255)
                                         e.send(gamehost,reply)
+                                        time.sleep(2)
                                         uart.write(reply)
+                                        time.sleep(2)
                                     except:
                                         FailureReason=4
                                     
