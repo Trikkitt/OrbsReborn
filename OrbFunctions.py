@@ -4,7 +4,6 @@ def GetVersionHigh():
 def GetVersionLow():
     return 2
 
-
 def get_config():
     import json
     try:
@@ -59,6 +58,21 @@ def connectwifi():
         sta.config(channel=1)
 
     return sta_if.isconnected()
+
+def setupESPNow():
+    import network
+    import espnow
+    sta = network.WLAN(network.WLAN.IF_STA)
+    sta.active(False)
+    ap = network.WLAN(network.WLAN.IF_AP)
+    ap.active(False)
+    sta.active(True)
+    sta.disconnect() 
+    sta.config(channel=1)
+    e = espnow.ESPNow()
+    e.active(True)
+    sta.config(pm=sta.PM_NONE)
+    return e
 
 
 
