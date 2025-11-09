@@ -14,7 +14,6 @@ def get_config():
         cfgdict={}
     return cfgdict
 
-
 def save_config(cfgdict):
     import json
     savesuccess=False
@@ -74,7 +73,10 @@ def setupESPNow():
     sta.config(pm=sta.PM_NONE)
     return e
 
-
+def getMACAddress():
+    import network
+    sta = network.WLAN(network.WLAN.IF_STA)
+    return sta.config('mac')
 
 def downloadfile(filename):
     import os
@@ -103,11 +105,11 @@ def downloadfile(filename):
         return False
 
 
-def DiscoverHost(pe,psta,puart):
+def DiscoverHost(pe,pmac,puart):
     bcast = b'\xff' * 6
     mygamehost=b'\xff' * 6
     discoveryPacket=bytearray(b'\xfe\x05')
-    discoveryPacket.extend(psta.config('mac'))
+    discoveryPacket.extend(pmac)
     crc=crc16(discoveryPacket)
     discoveryPacket.append(crc & 255)
     discoveryPacket.append(crc >> 8)
