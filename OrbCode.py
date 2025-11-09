@@ -1,35 +1,31 @@
 import network
 import espnow
 import OrbFunctions
-import uos
+import os
 import time
 from machine import deepsleep,UART,reset
 
-uos.dupterm(None,1)
+os.dupterm(None,1)
 uart = UART(0,115200,bits=8, parity=None, stop=1, timeout=2, timeout_char=2, rxbuf=255)
 
 
-CodeVersionHigh=1
-CodeVersionLow=0
+CodeVersionHigh=2
+CodeVersionLow=1
 PICVersionHigh=0
 PICVersionLow=0
 VersionChange=True
+MACAddress=OrbFunctions.getMACAddress()
 
-sta = network.WLAN(network.WLAN.IF_STA)
-sta.active(True)
-sta.disconnect() 
-sta.config(channel=1)
-e = espnow.ESPNow()
-e.active(True)
+e=OrbFunctions.setupESPNow()
 
-
-gamehost=OrbFunctions.DiscoverHost(e,sta,uart)
+gamehost=OrbFunctions.DiscoverHost(e,MACAddress,uart)
 AliveInterval=30
 LastAliveMsg=time.time()
 
 while True:
     if VersionChange==True:
         VersionChange=False
+        #print("Version Change Message")
         msg=bytearray(b'\xfe\x07')
         msg.append(CodeVersionHigh)
         msg.append(CodeVersionLow)
@@ -45,7 +41,7 @@ while True:
     if time.time()>LastAliveMsg:
         LastAliveMsg=time.time() + AliveInterval
         awakemsg=bytearray(b'\xfe\x06')
-        awakemsg.extend(sta.config('mac'))
+        awakemsg.extend(MACAddress)
         crc=OrbFunctions.crc16(awakemsg)
         awakemsg.append(crc & 255)
         awakemsg.append(crc >> 8)
@@ -84,6 +80,7 @@ while True:
                     #print("Received msg type: " + str(msg[0]))
                     if msg[0]==0xFA:
                         FailureReason=0
+                        e.active(False)
                         #print("Connecting wifi...")
                         if OrbFunctions.connectwifi()==True:
                             #print("Connected.")
@@ -93,10 +90,9 @@ while True:
                                 filename='OrbCode.py'
                             if msg[1]==2:
                                 filename='OrbFunctions.py'
-                            #print("Downloading file " + filename)
+                            #rint("Downloading file " + filename)
                             if OrbFunctions.downloadfile(filename)==True:
                                 #print("Downloaded.")
-                                import os
                                 newfilename="new-" + filename
                                 oldfilename="old-" + filename
                                 filestat=os.stat(newfilename)
@@ -108,6 +104,8 @@ while True:
                                     except:
                                         a=2
                                     try:
+                                        e=OrbFunctions.setupESPNow()
+                                        time.sleep(2)
                                         os.rename(filename,oldfilename)
                                         os.rename(newfilename,filename)
                                         reply=bytearray(b'\xfa')
@@ -117,12 +115,13 @@ while True:
                                         reply.append(crc >> 8)
                                         reply.append(crc & 255)
                                         e.send(gamehost,reply)
+                                        #print("sent OK to controller")
                                         time.sleep(2)
                                         uart.write(reply)
                                         time.sleep(2)
                                     except:
+                                        #print("Error during rename process")
                                         FailureReason=4
-                                    
                                 else:
                                     #print("file size mismatch")
                                     FailureReason=3
@@ -131,9 +130,9 @@ while True:
                         else:
                             FailureReason=1
                         #print("Result code: " + str(FailureReason))
-                        if FailureReason>0: 
-                            sta.disconnect()
-                            sta.config(channel=1)
+                        if FailureReason>0:
+                            e=OrbFunctions.setupESPNow()
+                            time.sleep(2)
                             reply=bytearray(b'\xfe\x08')
                             reply.append(FailureReason)
                             reply.extend('\x00\x00\x00\x00\x00')
