@@ -8,8 +8,8 @@ from machine import deepsleep,UART,reset
 uos.dupterm(None,1)
 uart = UART(0,115200,bits=8, parity=None, stop=1, timeout=2, timeout_char=2, rxbuf=255)
 
-CodeVersionHigh=1
-CodeVersionLow=0
+CodeVersionHigh=3
+CodeVersionLow=1
 PICVersionHigh=0
 PICVersionLow=0
 VersionChange=True
@@ -43,7 +43,7 @@ try:
             msg.append(OrbFunctions.GetVersionLow())
             msg.append(PICVersionHigh)
             msg.append(PICVersionLow)
-            msg.append(0)
+            #msg.append(0)
             crc=OrbFunctions.crc16(msg)
             msg.append(crc & 255)
             msg.append(crc >> 8)
