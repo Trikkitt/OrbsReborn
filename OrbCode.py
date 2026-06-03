@@ -43,7 +43,7 @@ try:
             msg.append(OrbFunctions.GetVersionLow())
             msg.append(PICVersionHigh)
             msg.append(PICVersionLow)
-            #msg.append(0)
+            msg.append(0)
             crc=OrbFunctions.crc16(msg)
             msg.append(crc & 255)
             msg.append(crc >> 8)
@@ -148,5 +148,6 @@ except Exception as e:
     f.write(e.value)
     f.write(str(e.errno))
     f.close()
+
 
 
