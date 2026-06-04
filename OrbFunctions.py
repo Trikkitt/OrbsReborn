@@ -1,8 +1,11 @@
+import sys
+
 def GetVersionHigh():
     return 2
 
 def GetVersionLow():
-    return 2
+    return 3
+
 
 def get_config():
     import json
@@ -13,6 +16,7 @@ def get_config():
     except BaseException as e:
         cfgdict={}
     return cfgdict
+
 
 def save_config(cfgdict):
     import json
@@ -39,6 +43,7 @@ def crc16(data):
                 crc = crc ^ 0xA001
             crc &= 0xFFFF
     return crc
+
 
 def connectwifi():
     import network
@@ -78,15 +83,18 @@ def getMACAddress():
     sta = network.WLAN(network.WLAN.IF_STA)
     return sta.config('mac')
 
+
 def downloadfile(filename):
     import os
     newfilename='new-' + filename
+    print("File download requested.")
     try:
         os.remove(newfilename)
     except:
         a=1
     try:
         import requests
+        print("Downloading...")
         url='https://raw.githubusercontent.com/Trikkitt/OrbsReborn/refs/heads/main/' + filename
         #r=requests.get(url)
         #open(filename,'wb').write(r.content)
@@ -98,18 +106,23 @@ def downloadfile(filename):
         r.close()
         filestat=os.stat(newfilename)
         if filestat[6]==14:
+            print("Invalid file length")
             return False
         else:
+            print("Valid file length")
             return True
-    except:
+    except Exception as e:
+        print("Exception in file download.")
+        print(e)
+        #sys.print_exception(e)
         return False
 
 
-def DiscoverHost(pe,pmac,puart):
+def DiscoverHost(pe,psta,puart):
     bcast = b'\xff' * 6
     mygamehost=b'\xff' * 6
     discoveryPacket=bytearray(b'\xfe\x05')
-    discoveryPacket.extend(pmac)
+    discoveryPacket.extend(psta.config('mac'))
     crc=crc16(discoveryPacket)
     discoveryPacket.append(crc & 255)
     discoveryPacket.append(crc >> 8)
