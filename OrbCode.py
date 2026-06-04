@@ -9,15 +9,29 @@ uos.dupterm(None,1)
 uart = UART(0,115200,bits=8, parity=None, stop=1, timeout=2, timeout_char=2, rxbuf=255)
 
 CodeVersionHigh=3
-CodeVersionLow=1
+CodeVersionLow=2
 PICVersionHigh=0
 PICVersionLow=0
 VersionChange=True
 
-sta = network.WLAN(network.WLAN.IF_STA)
-sta.active(True)
-sta.disconnect() 
+
+def wifi_reset():   # Reset wifi to AP_IF off, STA_IF on and disconnected
+  sta = network.WLAN(network.WLAN.IF_STA); sta.active(False)
+  ap = network.WLAN(network.WLAN.IF_AP); ap.active(False)
+  sta.active(True)
+  while not sta.active():
+      time.sleep(0.1)
+  sta.disconnect()   # For ESP8266
+  while sta.isconnected():
+      time.sleep(0.1)
+  return sta, ap
+
+sta, ap = wifi_reset()
 sta.config(channel=1)
+#sta = network.WLAN(network.WLAN.IF_STA)
+#sta.active(True)
+#sta.disconnect() 
+#sta.config(channel=1)
 e = espnow.ESPNow()
 e.active(True)
 
