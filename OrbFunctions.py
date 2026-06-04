@@ -1,7 +1,7 @@
 import sys
 
 def GetVersionHigh():
-    return 2
+    return 3
 
 def GetVersionLow():
     return 3
