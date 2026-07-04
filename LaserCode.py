@@ -12,6 +12,8 @@ from machine import I2S
 from machine import SDCard
 from machine import Pin
 
+LaserVersionLow=1
+LaserVersionHigh=1
 
 def get_config():
     import json
@@ -241,6 +243,8 @@ while True:
         LastAliveMsg=time.time() + AliveInterval
         awakemsg=bytearray(b'\xC1\x06')
         awakemsg.extend(sta.config('mac'))
+        awakemsg.append(LaserVersionHigh)
+        awakemsg.append(LaserVersionLow)
         crc=crc16(awakemsg)
         awakemsg.append(crc & 255)
         awakemsg.append(crc >> 8)
