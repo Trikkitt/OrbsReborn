@@ -147,8 +147,8 @@ AnimationFrame=0
 AnimationValue=0
 LastFrame=time.ticks_ms()
 LEDPin=Pin(2,Pin.OUT)
-LEDStrip=neopixel.NeoPixel(LEDPin,12)
-for i in range(12):
+LEDStrip=neopixel.NeoPixel(LEDPin,16)
+for i in range(16):
     LEDStrip[i]=(0,0,0)
 while True:
     if time.ticks_diff(time.ticks_ms(),LastFrame)>30:
@@ -166,7 +166,7 @@ while True:
                 AnimationValue=0
             if AnimationValue>255:
                 AnimationValue=255
-            for i in range(12):
+            for i in range(16):
                 if gunID==0:
                     LEDStrip[i]=(AnimationValue,0,0)
                 if gunID==1:
@@ -177,9 +177,9 @@ while True:
             if AnimationFrame>6:
                 AnimationFame=0
                 AnimationValue+=1
-                if AnimationValue>12:
+                if AnimationValue>=16:
                     AnimationValue=0
-                for i in range(12):
+                for i in range(16):
                     if i==AnimationValue:
                         if gunID==0:
                             LEDStrip[i]=(150,0,0)
@@ -190,13 +190,13 @@ while True:
                     else:
                         LEDStrip[i]=(0,0,0)
         if gameMode==2: # not in this game, lights out
-            for i in range(12):
+            for i in range(16):
                 LEDStrip[i]=(0,0,0)
         if gameMode==3:
-            if AnimationFrame>2:
+            if AnimationFrame>1:
                 AnimationFrame=0
-                AnimationValue=random.randint(0,12)
-                for i in range(12):
+                AnimationValue=random.randint(0,16)
+                for i in range(16):
                     if i==AnimationValue:
                         LEDStrip[i]=(random.randint(0,254),random.randint(0,254),random.randint(0,254))
                     else:
