@@ -6,6 +6,14 @@ import time
 from dataclasses import dataclass, field
 from io import BytesIO
 
+from kivy.config import Config
+
+STARTUP_WINDOW_WIDTH = 1920
+STARTUP_WINDOW_HEIGHT = 1200
+Config.set("graphics", "width", str(STARTUP_WINDOW_WIDTH))
+Config.set("graphics", "height", str(STARTUP_WINDOW_HEIGHT))
+Config.set("graphics", "fullscreen", "0")
+
 from kivy.app import App
 from kivy.clock import Clock
 from kivy.core.window import Window
@@ -34,7 +42,7 @@ else:
 
 
 Window.clearcolor = (0.02, 0.025, 0.055, 1)
-Window.size = (1920, 1200)
+Window.size = (STARTUP_WINDOW_WIDTH, STARTUP_WINDOW_HEIGHT)
 
 
 GAME_CATEGORIES = ("Solo / Co-operative", "Competitive / Combative")
