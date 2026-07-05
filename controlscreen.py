@@ -34,6 +34,7 @@ else:
 
 
 Window.clearcolor = (0.02, 0.025, 0.055, 1)
+Window.size = (1920, 1200)
 
 
 GAME_CATEGORIES = ("Solo / Co-operative", "Competitive / Combative")
