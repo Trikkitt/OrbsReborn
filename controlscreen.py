@@ -9,7 +9,7 @@ from io import BytesIO
 from kivy.config import Config
 
 STARTUP_WINDOW_WIDTH = 1920
-STARTUP_WINDOW_HEIGHT = 1200
+STARTUP_WINDOW_HEIGHT = 1080
 Config.set("graphics", "width", str(STARTUP_WINDOW_WIDTH))
 Config.set("graphics", "height", str(STARTUP_WINDOW_HEIGHT))
 Config.set("graphics", "fullscreen", "0")
@@ -60,6 +60,15 @@ PLAYERS = [
 HIGH_SCORE_URL = "https://example.com/orbs-lasertag/high-scores"
 GAME_DURATION_SECONDS = 60
 HIGH_SCORE_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "high_scores.json")
+FONT_SCALE = 2
+
+
+def scaled_font(size):
+    return dp(size * FONT_SCALE)
+
+
+def scaled_dimension(size):
+    return dp(size * FONT_SCALE)
 
 
 @dataclass
@@ -258,8 +267,8 @@ class SelectionButton(ButtonBehavior, NeonPanel):
 
     def __init__(self, **kwargs):
         super().__init__(orientation="vertical", **kwargs)
-        self.title_label = Label(text=self.title, font_size=dp(24), bold=True, color=(1, 1, 1, 1), halign="center")
-        self.subtitle_label = Label(text=self.subtitle, font_size=dp(14), color=(0.72, 0.78, 0.95, 1), halign="center")
+        self.title_label = Label(text=self.title, font_size=scaled_font(24), bold=True, color=(1, 1, 1, 1), halign="center")
+        self.subtitle_label = Label(text=self.subtitle, font_size=scaled_font(14), color=(0.72, 0.78, 0.95, 1), halign="center")
         self.add_widget(self.title_label)
         self.add_widget(self.subtitle_label)
         self.bind(
@@ -305,9 +314,9 @@ class FormatSelectionButton(ButtonBehavior, NeonPanel):
 
     def __init__(self, **kwargs):
         super().__init__(orientation="vertical", **kwargs)
-        self.title_label = Label(font_size=dp(19), bold=True, color=(1, 1, 1, 1), halign="center", valign="middle", size_hint=(1, 0.28))
-        self.description_label = Label(font_size=dp(12), color=(0.74, 0.8, 0.96, 1), halign="center", valign="top", size_hint=(1, 0.42))
-        self.high_scores_label = Label(font_size=dp(12), bold=True, color=(0.58, 1.0, 0.62, 1), halign="center", valign="middle", size_hint=(1, 0.3))
+        self.title_label = Label(font_size=scaled_font(19), bold=True, color=(1, 1, 1, 1), halign="center", valign="middle", size_hint=(1, 0.28))
+        self.description_label = Label(font_size=scaled_font(12), color=(0.74, 0.8, 0.96, 1), halign="center", valign="top", size_hint=(1, 0.42))
+        self.high_scores_label = Label(font_size=scaled_font(12), bold=True, color=(0.58, 1.0, 0.62, 1), halign="center", valign="middle", size_hint=(1, 0.3))
         for label in (self.title_label, self.description_label, self.high_scores_label):
             label.bind(size=lambda label, _size: setattr(label, "text_size", (label.width, None)))
             self.add_widget(label)
@@ -379,8 +388,8 @@ class PlayerSlot(NeonPanel):
     def __init__(self, **kwargs):
         super().__init__(orientation="vertical", **kwargs)
         self.gun = LaserGunWidget(size_hint=(1, 0.8), accent=self.accent)
-        self.name_label = Label(text=self.player_name, font_size=dp(20), bold=True, color=(1, 1, 1, 1))
-        self.status_label = Label(text="Waiting for trigger", font_size=dp(14), color=(0.62, 0.66, 0.78, 1))
+        self.name_label = Label(text=self.player_name, font_size=scaled_font(20), bold=True, color=(1, 1, 1, 1))
+        self.status_label = Label(text="Waiting for trigger", font_size=scaled_font(14), color=(0.62, 0.66, 0.78, 1))
         self.add_widget(self.gun)
         self.add_widget(self.name_label)
         self.add_widget(self.status_label)
@@ -413,9 +422,9 @@ class ScoreCard(NeonPanel):
 
     def __init__(self, **kwargs):
         super().__init__(orientation="vertical", **kwargs)
-        self.header = Label(font_size=dp(23), bold=True, color=(1, 1, 1, 1), size_hint=(1, 0.25))
-        self.score = Label(font_size=dp(42), bold=True, color=(0.55, 1.0, 0.58, 1), size_hint=(1, 0.35))
-        self.stats = Label(font_size=dp(15), color=(0.78, 0.83, 0.96, 1), halign="center", valign="middle", size_hint=(1, 0.4))
+        self.header = Label(font_size=scaled_font(23), bold=True, color=(1, 1, 1, 1), size_hint=(1, 0.25))
+        self.score = Label(font_size=scaled_font(42), bold=True, color=(0.55, 1.0, 0.58, 1), size_hint=(1, 0.35))
+        self.stats = Label(font_size=scaled_font(15), color=(0.78, 0.83, 0.96, 1), halign="center", valign="middle", size_hint=(1, 0.4))
         self.stats.bind(size=lambda label, _size: setattr(label, "text_size", (label.width, None)))
         self.add_widget(self.header)
         self.add_widget(self.score)
@@ -437,9 +446,9 @@ class QRCodePanel(NeonPanel):
 
     def __init__(self, **kwargs):
         super().__init__(orientation="vertical", **kwargs)
-        self.title = Label(text="Scan for high scores", font_size=dp(20), bold=True, color=(1, 1, 1, 1), size_hint=(1, 0.18))
+        self.title = Label(text="Scan for high scores", font_size=scaled_font(20), bold=True, color=(1, 1, 1, 1), size_hint=(1, 0.18))
         self.image = Image(size_hint=(1, 0.72), allow_stretch=True, keep_ratio=True)
-        self.link = Label(text=self.url, font_size=dp(13), color=(0.75, 0.9, 1, 1), size_hint=(1, 0.1))
+        self.link = Label(text=self.url, font_size=scaled_font(13), color=(0.75, 0.9, 1, 1), size_hint=(1, 0.1))
         self.add_widget(self.title)
         self.add_widget(self.image)
         self.add_widget(self.link)
@@ -499,7 +508,7 @@ class LobbyScreen(Screen):
         header = BoxLayout(size_hint=(1, 0.12), spacing=dp(14))
         title = Button(
             text="Orbs LaserTag",
-            font_size=dp(36),
+            font_size=scaled_font(36),
             bold=True,
             color=(1, 1, 1, 1),
             halign="left",
@@ -508,7 +517,7 @@ class LobbyScreen(Screen):
         )
         title.bind(size=lambda button, _size: setattr(button, "text_size", (button.width, None)))
         title.bind(on_release=lambda _button: self.register_title_tap())
-        hint = Label(text="Pull a laser trigger to enter or leave", font_size=dp(15), color=(0.62, 0.72, 0.96, 1), halign="right")
+        hint = Label(text="Pull a laser trigger to enter or leave", font_size=scaled_font(15), color=(0.62, 0.72, 0.96, 1), halign="right")
         hint.bind(size=lambda label, _size: setattr(label, "text_size", (label.width, None)))
         header.add_widget(title)
         header.add_widget(hint)
@@ -532,11 +541,11 @@ class LobbyScreen(Screen):
             players_row.add_widget(slot)
 
         action_row = BoxLayout(size_hint=(1, 0.15), spacing=dp(16))
-        self.summary = Label(text="Select a game format", font_size=dp(19), color=(0.84, 0.88, 1, 1), halign="left")
+        self.summary = Label(text="Select a game format", font_size=scaled_font(19), color=(0.84, 0.88, 1, 1), halign="left")
         self.summary.bind(size=lambda label, _size: setattr(label, "text_size", (label.width, None)))
         self.description_button = Button(
             text="DESCRIPTION",
-            font_size=dp(22),
+            font_size=scaled_font(22),
             bold=True,
             background_normal="",
             background_color=(0.16, 0.4, 0.72, 1),
@@ -547,7 +556,7 @@ class LobbyScreen(Screen):
         self.description_button.bind(on_release=lambda _button: self.show_selected_description())
         self.start_button = Button(
             text="START",
-            font_size=dp(34),
+            font_size=scaled_font(34),
             bold=True,
             background_normal="",
             background_color=(0.12, 0.82, 0.18, 1),
@@ -598,11 +607,11 @@ class LobbyScreen(Screen):
         self.format_grid.clear_widgets()
         self.format_buttons.clear()
         if not self.state.selected_category:
-            self.format_grid.add_widget(Label(text="Game formats appear when the controller replies", font_size=dp(20), color=(0.48, 0.55, 0.72, 1), size_hint_y=None, height=dp(72)))
+            self.format_grid.add_widget(Label(text="Game formats appear when the controller replies", font_size=scaled_font(20), color=(0.48, 0.55, 0.72, 1), size_hint_y=None, height=scaled_dimension(72)))
             return
         formats = self.state.formats_by_category(self.state.selected_category)
         if not formats:
-            self.format_grid.add_widget(Label(text="No formats reported for this category", font_size=dp(20), color=(0.48, 0.55, 0.72, 1), size_hint_y=None, height=dp(72)))
+            self.format_grid.add_widget(Label(text="No formats reported for this category", font_size=scaled_font(20), color=(0.48, 0.55, 0.72, 1), size_hint_y=None, height=scaled_dimension(72)))
             return
         app = App.get_running_app()
         for game_format in formats:
@@ -612,7 +621,7 @@ class LobbyScreen(Screen):
                 high_scores=app.high_scores.summary(game_format.game_id),
                 accent=[1.0, 0.8, 0.25, 1],
                 size_hint_y=None,
-                height=dp(140),
+                height=scaled_dimension(140),
             )
             button.bind(on_release=lambda _button, game_id=game_format.game_id: self.select_format(game_id))
             self.format_buttons[game_format.game_id] = button
@@ -623,21 +632,21 @@ class LobbyScreen(Screen):
         if not game_format:
             return
         content = BoxLayout(orientation="vertical", padding=dp(14), spacing=dp(12))
-        heading = Label(text=game_format.name, font_size=dp(26), bold=True, color=(1, 1, 1, 1), size_hint=(1, None), height=dp(44))
+        heading = Label(text=game_format.name, font_size=scaled_font(26), bold=True, color=(1, 1, 1, 1), size_hint=(1, None), height=scaled_dimension(44))
         scores = Label(
             text=App.get_running_app().high_scores.summary(game_format.game_id),
-            font_size=dp(17),
+            font_size=scaled_font(17),
             bold=True,
             color=(0.58, 1.0, 0.62, 1),
             size_hint=(1, None),
-            height=dp(34),
+            height=scaled_dimension(34),
         )
-        description = Label(text=game_format.description or "No description provided.", font_size=dp(18), color=(0.82, 0.88, 1, 1), halign="left", valign="top", size_hint_y=None)
+        description = Label(text=game_format.description or "No description provided.", font_size=scaled_font(18), color=(0.82, 0.88, 1, 1), halign="left", valign="top", size_hint_y=None)
         description.bind(width=lambda label, width: setattr(label, "text_size", (width, None)))
         description.bind(texture_size=lambda label, texture_size: setattr(label, "height", texture_size[1]))
         description_scroll = ScrollView(size_hint=(1, 1), do_scroll_x=False)
         description_scroll.add_widget(description)
-        close_button = Button(text="CLOSE", font_size=dp(22), bold=True, size_hint=(1, None), height=dp(52))
+        close_button = Button(text="CLOSE", font_size=scaled_font(22), bold=True, size_hint=(1, None), height=scaled_dimension(52))
         content.add_widget(heading)
         content.add_widget(scores)
         content.add_widget(description_scroll)
@@ -718,11 +727,11 @@ class GameScreen(Screen):
 
         root = BoxLayout(orientation="vertical", padding=dp(22), spacing=dp(16))
         top = BoxLayout(size_hint=(1, 0.18), spacing=dp(14))
-        self.mission_label = Label(font_size=dp(27), bold=True, color=(1, 1, 1, 1), halign="left")
+        self.mission_label = Label(font_size=scaled_font(27), bold=True, color=(1, 1, 1, 1), halign="left")
         self.mission_label.bind(size=lambda label, _size: setattr(label, "text_size", (label.width, None)))
-        self.highest_score_label = Label(font_size=dp(26), bold=True, color=(1.0, 0.86, 0.3, 1), halign="center")
+        self.highest_score_label = Label(font_size=scaled_font(26), bold=True, color=(1.0, 0.86, 0.3, 1), halign="center")
         self.highest_score_label.bind(size=lambda label, _size: setattr(label, "text_size", (label.width, None)))
-        self.timer_label = Label(text="01:00", font_size=dp(58), bold=True, color=(0.5, 1.0, 0.55, 1), halign="right")
+        self.timer_label = Label(text="01:00", font_size=scaled_font(58), bold=True, color=(0.5, 1.0, 0.55, 1), halign="right")
         self.timer_label.bind(size=lambda label, _size: setattr(label, "text_size", (label.width, None)))
         top.add_widget(self.mission_label)
         top.add_widget(self.highest_score_label)
@@ -730,14 +739,14 @@ class GameScreen(Screen):
 
         self.score_area = GridLayout(cols=3, spacing=dp(14), size_hint=(1, 0.58))
         stats_band = NeonPanel(orientation="vertical", size_hint=(1, 0.2), border_color=[0.2, 0.82, 1.0, 0.7])
-        self.stats_label = Label(font_size=dp(19), color=(0.78, 0.88, 1, 1), halign="center", valign="middle")
+        self.stats_label = Label(font_size=scaled_font(19), color=(0.78, 0.88, 1, 1), halign="center", valign="middle")
         self.stats_label.bind(size=lambda label, _size: setattr(label, "text_size", (label.width, None)))
         stats_band.add_widget(self.stats_label)
 
         action_row = BoxLayout(size_hint=(1, 0.1), spacing=dp(16))
         self.abort_button = Button(
             text="ABORT",
-            font_size=dp(24),
+            font_size=scaled_font(24),
             bold=True,
             background_normal="",
             background_color=(0.9, 0.18, 0.14, 1),
@@ -884,7 +893,7 @@ class GameOverScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         root = BoxLayout(orientation="vertical", padding=dp(22), spacing=dp(16))
-        title = Label(text="GAME OVER", font_size=dp(58), bold=True, color=(1.0, 0.25, 0.18, 1), size_hint=(1, 0.18))
+        title = Label(text="GAME OVER", font_size=scaled_font(58), bold=True, color=(1.0, 0.25, 0.18, 1), size_hint=(1, 0.18))
         content = BoxLayout(spacing=dp(16), size_hint=(1, 0.62))
         self.results = NeonPanel(orientation="vertical", border_color=[1.0, 0.35, 0.25, 0.9])
         self.qr = QRCodePanel(url=HIGH_SCORE_URL, border_color=[0.25, 0.85, 1.0, 0.9])
@@ -892,7 +901,7 @@ class GameOverScreen(Screen):
         content.add_widget(self.qr)
         reset = Button(
             text="RESET",
-            font_size=dp(32),
+            font_size=scaled_font(32),
             bold=True,
             background_normal="",
             background_color=(0.16, 0.62, 1.0, 1),
@@ -907,14 +916,14 @@ class GameOverScreen(Screen):
 
     def refresh(self):
         self.results.clear_widgets()
-        heading = Label(text=f"Final Ranking: {self.state.selected_format_name}", font_size=dp(27), bold=True, color=(1, 1, 1, 1), size_hint=(1, 0.18))
+        heading = Label(text=f"Final Ranking: {self.state.selected_format_name}", font_size=scaled_font(27), bold=True, color=(1, 1, 1, 1), size_hint=(1, 0.18))
         self.results.add_widget(heading)
         ranked = self.state.ranked_players
         if self.state.cooperative:
             self.results.add_widget(
                 Label(
                     text=f"Team Score\n{self.state.combined_score}",
-                    font_size=dp(38),
+                    font_size=scaled_font(38),
                     bold=True,
                     color=(0.55, 1.0, 0.58, 1),
                     size_hint=(1, 0.26),
@@ -923,7 +932,7 @@ class GameOverScreen(Screen):
         for position, player in enumerate(ranked, start=1):
             label = Label(
                 text=f"Rank {position}: {player.name}   {player.score} pts   {player.accuracy}% accuracy",
-                font_size=dp(24),
+                font_size=scaled_font(24),
                 color=player.color,
                 size_hint=(1, 0.18),
             )
@@ -1210,14 +1219,14 @@ class OrbsLaserTagApp(App):
 
     def show_hidden_menu(self):
         content = BoxLayout(orientation="vertical", padding=dp(16), spacing=dp(14))
-        title = Label(text="Hidden Menu", font_size=dp(28), bold=True, color=(1, 1, 1, 1), size_hint=(1, None), height=dp(44))
-        length_label = Label(font_size=dp(22), color=(0.82, 0.9, 1, 1), size_hint=(1, None), height=dp(40))
-        length_row = BoxLayout(spacing=dp(12), size_hint=(1, None), height=dp(56))
-        decrease = Button(text="-15s", font_size=dp(22), bold=True)
-        increase = Button(text="+15s", font_size=dp(22), bold=True)
-        diag_on = Button(text="Diagnostics On", font_size=dp(22), bold=True, size_hint=(1, None), height=dp(56))
-        diag_off = Button(text="Diagnostics Off", font_size=dp(22), bold=True, size_hint=(1, None), height=dp(56))
-        close = Button(text="CLOSE", font_size=dp(22), bold=True, size_hint=(1, None), height=dp(52))
+        title = Label(text="Hidden Menu", font_size=scaled_font(28), bold=True, color=(1, 1, 1, 1), size_hint=(1, None), height=scaled_dimension(44))
+        length_label = Label(font_size=scaled_font(22), color=(0.82, 0.9, 1, 1), size_hint=(1, None), height=scaled_dimension(40))
+        length_row = BoxLayout(spacing=dp(12), size_hint=(1, None), height=scaled_dimension(56))
+        decrease = Button(text="-15s", font_size=scaled_font(22), bold=True)
+        increase = Button(text="+15s", font_size=scaled_font(22), bold=True)
+        diag_on = Button(text="Diagnostics On", font_size=scaled_font(22), bold=True, size_hint=(1, None), height=scaled_dimension(56))
+        diag_off = Button(text="Diagnostics Off", font_size=scaled_font(22), bold=True, size_hint=(1, None), height=scaled_dimension(56))
+        close = Button(text="CLOSE", font_size=scaled_font(22), bold=True, size_hint=(1, None), height=scaled_dimension(52))
 
         def refresh_length():
             length_label.text = f"Game length: {self.state.game_length_seconds} seconds"
@@ -1241,7 +1250,7 @@ class OrbsLaserTagApp(App):
         content.add_widget(diag_on)
         content.add_widget(diag_off)
         content.add_widget(close)
-        popup = Popup(title="", content=content, size_hint=(0.58, 0.58))
+        popup = Popup(title="", content=content, size_hint=(0.62, 0.76))
         close.bind(on_release=popup.dismiss)
         refresh_length()
         popup.open()
