@@ -224,7 +224,14 @@ while True:
                 crc=crc16(outmsg)
                 outmsg.append(crc & 255)
                 outmsg.append(crc >> 8)
-                e.send(gamehost,outmsg)                        
+                retrycount=0
+                msgsent=False
+                while retrycount<6 and msgsent==False:
+                    try:
+                        e.send(gamehost,outmsg)
+                        msgsent=True
+                    except:
+                        retrycount+=1
                 
             if gameMode==4 and time.ticks_diff(time.ticks_ms(),LastShot)>=shotTimings[shotRate]: # can only fire when in an active game
                 AudioPlayer.PlayLoadedFile() #("Laser1.raw")
@@ -248,7 +255,14 @@ while True:
         crc=crc16(awakemsg)
         awakemsg.append(crc & 255)
         awakemsg.append(crc >> 8)
-        e.send(gamehost,awakemsg)
+        retrycount=0
+        msgsent=False
+        while retrycount<6 and msgsent==False:
+            try:
+                e.send(gamehost,awakemsg)
+                msgsent=True
+            except:
+                retrycount+=1
     if time.time()>LastMsg: # Game host has gone silent
         e.del_peer(gamehost)
         gamehost=LaserDiscoverHost(e,sta)
@@ -290,7 +304,14 @@ while True:
         crc=crc16(outmsg)
         outmsg.append(crc & 255)
         outmsg.append(crc >> 8)
-        e.send(gamehost,outmsg)                        
+        retrycount=0
+        msgsent=False
+        while retrycount<6 and msgsent==False:
+            try:
+                e.send(gamehost,outmsg)
+                msgsent=True
+            except:
+                retrycount+=1
         
     if (e.any()):
         host,msg=e.irecv()
@@ -335,7 +356,14 @@ while True:
                                 e.add_peer(Orb)
                             except:
                                 print("Already registered orb")
-                        e.send(Orb,outmsg)
+                        retrycount=0
+                        msgsent=False
+                        while retrycount<6 and msgsent==False:
+                            try:
+                                e.send(Orb,outmsg)
+                                msgsent=True
+                            except:
+                                retrycount+=1
                         
                         #outmsg=bytearray(b'\xC9\xD3')
                         #outmsg.append(msg[1])
@@ -354,7 +382,14 @@ while True:
                         msgsent=0
                         for Orb in RegisteredOrbs:
                             msgsent+=1
-                            e.send(Orb,outmsg)
+                            retrycount=0
+                            msgsent=False
+                            while retrycount<6 and msgsent==False:
+                                try:
+                                    e.send(Orb,outmsg)
+                                    msgsent=True
+                                except:
+                                    retrycount+=1
                         #outmsg=bytearray(b'\xC9\xD4')
                         #outmsg.append(0)
                         #outmsg.append(msgsent)
@@ -449,7 +484,7 @@ while True:
                             FailureReason=1
                         if FailureReason>0: 
                             sta.disconnect()
-                            sta.config(channel=1)
+                            sta.config(channel=11)
                             reply=bytearray(b'\xfe\x08')
                             reply.append(FailureReason)
                             reply.extend('\x00\x00\x00\x00\x00')
@@ -462,7 +497,15 @@ while True:
                     crc=crc16(reply)
                     reply.append(crc & 255)
                     reply.append(crc >> 8)
-                    e.send(gamehost,reply)
+                    retrycount=0
+                    msgsent=False
+                    while retrycount<6 and msgsent==False:
+                        try:
+                            e.send(gamehost,reply)
+                            msgsent=True
+                        except:
+                            retrycount+=1
+
 
 
 
